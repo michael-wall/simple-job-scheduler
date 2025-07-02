@@ -34,6 +34,7 @@ public class SimpleDispatchTaskExecutor extends BaseDispatchTaskExecutor {
 	private interface JOB_PROPERTIES {
 		static final String TEST_PROPERTY_1 = "test.property_1";
 		static final String TEST_PROPERTY_2 = "test.property_2";
+		static final String USER_ID = "user.id";
 	}
 	
 	@Override
@@ -59,9 +60,13 @@ public class SimpleDispatchTaskExecutor extends BaseDispatchTaskExecutor {
 		// Reading known properties from the Job Details screen properties.
 		String testProperty1 = properties.getProperty(JOB_PROPERTIES.TEST_PROPERTY_1, null);
 		String testProperty2 = properties.getProperty(JOB_PROPERTIES.TEST_PROPERTY_2, null);
+		String userIdString = properties.getProperty(JOB_PROPERTIES.USER_ID, null);
+
 		
 		_log.info("doExecute " + JOB_PROPERTIES.TEST_PROPERTY_1 + ": " + testProperty1);
 		_log.info("doExecute " + JOB_PROPERTIES.TEST_PROPERTY_2 + ": " + testProperty2);
+		_log.info("doExecute " + JOB_PROPERTIES.USER_ID + ": " + userIdString);
+
 
 		Set<Entry<String, String>> entries = properties.entrySet();
 		
@@ -84,14 +89,42 @@ public class SimpleDispatchTaskExecutor extends BaseDispatchTaskExecutor {
 			throw new PortalException("doExecute " + JOB_PROPERTIES.TEST_PROPERTY_2 + " property is null...");
 		}
         
-        List<User> users = userLocalService.getCompanyUsers(dispatchTrigger.getCompanyId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+        User configUser = null;
         
+        if (Validator.isNull(userIdString) || !isValidLong(userIdString)) {
+			_log.info("doExecute " + JOB_PROPERTIES.USER_ID + " property is null or invalid...");
+			
+			throw new PortalException("doExecute " + JOB_PROPERTIES.USER_ID + " property is null or invalid...");
+		} else {
+			configUser = userLocalService.fetchUser(Long.parseLong(userIdString));
+			
+			if (configUser == null) {			
+				_log.info("doExecute " + JOB_PROPERTIES.USER_ID + " user not found...");
+				
+				throw new PortalException("doExecute " + JOB_PROPERTIES.USER_ID + " user not found...");
+			}
+		}
+        
+        List<User> users = userLocalService.getCompanyUsers(dispatchTrigger.getCompanyId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+                
         for (User user: users) {
         	_log.info(user.getFullName());
         }
 		
 		_log.info("doExecute completed...");
 	}
+	
+	private boolean isValidLong(String longString) {
+		if (Validator.isName(longString)) return false;
+		
+	    try {
+	        Long.parseLong(longString.trim());
+	        
+	        return true;
+	    } catch (NumberFormatException e) {
+	        return false;
+	    }
+	}	
 	
 	@Reference(unbind = "-")
 	private UserLocalService userLocalService;
