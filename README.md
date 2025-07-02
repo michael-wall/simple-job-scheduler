@@ -9,7 +9,7 @@
 ## Configuration ##
 - Build and deploy the custom OSGi module.
 - Go to Control Panel > Configuration > Job Scheduler
-- Click 'New' and select simple-dispatch-task-executer from the dropdown.
+- Click 'New' and select simple-dispatch-task-executor from the dropdown.
 - Populate a name e.g. 'Simple Job Scheduler' and add the following custom properties (one per line in the format key=value) in the text and 'Save'.
 ```
 test.property_1=value 1
@@ -27,6 +27,7 @@ user.id=99999 [this should be a userId of an Active user in the Virtual Instance
  
 ## Custom Properties ##
 - These sample custom properties are included as examples of how the properties can be injected into the Job for configuration, rather than hardcoding values in the Job code.
+- For example the same Task Executor can be used by more than 1 Job Scheduler. The custom properties can instruct the different Job Schedulers to do different things based on the logic in the Task Executor.
 
 ## Notes ##
 - This is a ‘proof of concept’ that is being provided ‘as is’ without any support coverage or warranty.
