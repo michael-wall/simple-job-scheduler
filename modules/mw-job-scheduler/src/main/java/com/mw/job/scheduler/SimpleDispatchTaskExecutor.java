@@ -26,7 +26,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	immediate = true,
 	property = {
-		"dispatch.task.executor.name=simple-dispatch-task-executer", "dispatch.task.executor.type=simple-dispatch-task-executer"
+		"dispatch.task.executor.name=simple-dispatch-task-executor", "dispatch.task.executor.type=simple-dispatch-task-executor"
 	},
 	service = DispatchTaskExecutor.class
 )
@@ -39,7 +39,7 @@ public class SimpleDispatchTaskExecutor extends BaseDispatchTaskExecutor {
 	
 	@Override
 	public String getName() {
-		return "simple-dispatch-task-executer";
+		return "simple-dispatch-task-executor";
 	}	
 	
 	@Activate
